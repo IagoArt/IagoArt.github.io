@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El teu carro | ƧΛPӨ</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --accent: #ff4757;
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-main); }
+
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 5%; background-color: #121212; border-bottom: 1px solid #333; }
+        .logo { font-size: 1.5rem; font-weight: 700; letter-spacing: 2px; text-decoration: none; color: white; }
+        .back-link { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
+        .back-link:hover { color: white; }
+
+        .cart-container { max-width: 1200px; margin: 3rem auto; padding: 0 1rem; display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
+
+        /* Cart Items */
+        .cart-items { background-color: var(--card-bg); border-radius: 8px; padding: 2rem; }
+        .cart-item { display: flex; align-items: center; padding-bottom: 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid #333; }
+        .cart-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .item-thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 4px; margin-right: 1.5rem; }
+        .item-details { flex-grow: 1; }
+        .item-title { font-weight: bold; font-size: 1.1rem; }
+        .item-artist { color: var(--text-muted); font-size: 0.9rem; }
+        .item-price { font-weight: bold; color: var(--accent); }
+        .remove-btn { background: none; border: none; color: #666; cursor: pointer; font-size: 1.5rem; margin-left: 1rem; }
+        .remove-btn:hover { color: var(--accent); }
+
+        /* Summary */
+        .cart-summary { background-color: var(--card-bg); border-radius: 8px; padding: 2rem; height: fit-content; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 1rem; color: var(--text-muted); }
+        .summary-total { display: flex; justify-content: space-between; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #333; font-size: 1.2rem; font-weight: bold; color: white; }
+
+        /* Contact Button */
+        .contact-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background-color: white;
+            color: black;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 1.5rem;
+            transition: 0.3s;
+            border-radius: 4px;
+        }
+        .contact-btn:hover { background-color: var(--accent); color: white; }
+
+        .empty-msg { text-align: center; padding: 2rem; color: var(--text-muted); }
+
+        @media (max-width: 768px) { .cart-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">ƧΛPӨ</a>
+        <a href="index.html" class="back-link">← Tornar a la galeria</a>
+    </nav>
+
+    <div class="cart-container">
+        <div class="cart-items" id="cart-list">
+            </div>
+
+        <div class="cart-summary">
+            <h2>La meva llista</h2>
+            <br>
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span id="subtotal">0€</span>
+            </div>
+            <div class="summary-total">
+                <span>Total</span>
+                <span id="total">0€</span>
+            </div>
+
+            <a id="email-link" href="#" class="contact-btn">Contactar i comprar</a>
+        </div>
+    </div>
+
+    <script>
+        // 1. Recuperar el carro
+        let cart = JSON.parse(localStorage.getItem('modernaCart')) || [];
+        const container = document.getElementById('cart-list');
+
+        function renderCart() {
+            container.innerHTML = '';
+            let total = 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = '<div class="empty-msg">Tens el carretó buit.<br><br><a href="index.html" style="color:white; text-decoration:underline;">Mirar la galeria</a></div>';
+                updateTotals(0);
+                document.getElementById('email-link').style.display = 'none';
+                return;
+            } else {
+                document.getElementById('email-link').style.display = 'block';
+            }
+
+            cart.forEach((item, index) => {
+                // Elimina el símbol € per fer matemàtiques
+                let priceNumber = parseFloat(item.price.replace('€', '').replace(',', ''));
+                total += priceNumber;
+
+                const html = `
+                    <div class="cart-item">
+                        <img src="${item.image}" alt="Art" class="item-thumb" onerror="this.src='https://placehold.co/80x80/333/FFF?text=Art'">
+                        <div class="item-details">
+                            <div class="item-title">${item.title}</div>
+                            <div class="item-artist">${item.artist}</div>
+                            <div class="item-price">${item.price}</div>
+                        </div>
+                        <button class="remove-btn" onclick="removeItem(${index})">&times;</button>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+
+            updateTotals(total);
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('modernaCart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function updateTotals(total) {
+            // Formata el número a estil europeu (ex: 1.200,00€)
+            const formattedTotal = total.toLocaleString('ca-ES', {minimumFractionDigits: 0, maximumFractionDigits: 2}) + '€';
+
+            document.getElementById('subtotal').innerText = formattedTotal;
+            document.getElementById('total').innerText = formattedTotal;
+
+            updateEmailLink(formattedTotal);
+        }
+
+        function updateEmailLink(finalTotal) {
+            const email = "gallartiago@gmail.com";
+            const subject = "Sol·licitud de compra d'Art - SAPO";
+
+            // Cos del correu en Català
+            let body = "Hola,\n\nEstic interessat/da en adquirir les següents peces de la vostra col·lecció:\n\n";
+
+            cart.forEach(item => {
+                body += `• ${item.title} de ${item.artist} (${item.price})\n`;
+            });
+
+            body += `\nValor Total: ${finalTotal}`;
+            body += `\n\nSi us plau, indiqueu-me els passos a seguir per al pagament i l'enviament.\n\nCordialment,`;
+
+            // Codificar per URL
+            const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+            document.getElementById('email-link').href = mailtoUrl;
+        }
+
+        // Càrrega inicial
+        renderCart();
+
+    </script>
+</body>
+</html>

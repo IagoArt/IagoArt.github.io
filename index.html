@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ƧΛPӨ | 𐌋'𐌀ዪ𐌕 𐌀ዓ𐌵ጎ</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --accent: #ff4757;
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-main); line-height: 1.6; }
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* Nav */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 5%; position: sticky; top: 0; background-color: rgba(18, 18, 18, 0.95); backdrop-filter: blur(5px); z-index: 100; border-bottom: 1px solid #333; }
+        .logo { font-size: 1.5rem; font-weight: 700; letter-spacing: 2px; }
+        .cart-icon { position: relative; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .cart-icon:hover { color: var(--accent); }
+        .cart-count { background-color: var(--accent); color: white; font-size: 0.8rem; padding: 2px 8px; border-radius: 12px; font-weight: bold; }
+
+        /* Hero */
+        .hero { height: 70vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://placehold.co/1920x1080/222/FFF?text=L%27art+és+viu'); background-size: cover; padding: 0 1rem; }
+        .hero h1 { font-size: 3rem; margin-bottom: 1rem; }
+        .btn { padding: 1rem 2rem; background-color: white; color: black; text-transform: uppercase; font-weight: bold; border: none; cursor: pointer; }
+        .btn:hover { background-color: var(--accent); color: white; }
+
+        /* Gallery */
+        .gallery-section { padding: 4rem 5%; }
+        .art-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .art-card { background-color: var(--card-bg); border-radius: 8px; overflow: hidden; transition: transform 0.3s ease; }
+        .art-card:hover { transform: translateY(-5px); }
+        .art-image { width: 100%; height: 350px; object-fit: cover; }
+        .art-info { padding: 1.5rem; }
+        .art-title { font-size: 1.2rem; font-weight: 600; }
+        .art-artist { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; font-style: italic; }
+        .art-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
+        .art-price { font-size: 1.1rem; color: var(--accent); font-weight: bold; }
+        .add-to-cart { padding: 0.5rem 1rem; background: transparent; border: 1px solid white; color: white; cursor: pointer; }
+        .add-to-cart:hover { background: white; color: black; }
+
+        /* Toast */
+        #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; transform: translateX(-50%); box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">ƧΛPӨ</div>
+        <div class="cart-icon" onclick="window.location.href='cart.html'">
+            <span>Carro</span>
+            <span class="cart-count" id="cart-count">0</span>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>ᴬᴿᵀ ᴺᴼ-ᶜᴼᴺᶠᴼᴿᴹᴱ</h1>
+        <button class="btn" onclick="document.getElementById('gallery').scrollIntoView({behavior: 'smooth'})">Col·lecció</button>
+    </section>
+
+    <section class="gallery-section" id="gallery">
+        <div class="art-grid">
+            <div class="art-card">
+                <img src="./img/Protest2.png" onerror="this.src='https://placehold.co/400x500/333/FFF?text=Art+Missing'" class="art-image">
+                <div class="art-info">
+                    <div class="art-title">Insane injustice</div>
+                    <div class="art-artist">by Iago Gallart</div>
+                    <div class="art-footer">
+                        <span class="art-price">20€</span>
+                        <button class="add-to-cart">Emporta-t'ho</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="art-card">
+                <img src="./img/ItalyOlymics3.png" onerror="this.src='https://placehold.co/400x500/333/FFF?text=Art+Missing'" class="art-image">
+                <div class="art-info">
+                    <div class="art-title">Congelament global</div>
+                    <div class="art-artist">by Iago Gallart</div>
+                    <div class="art-footer">
+                        <span class="art-price">30€</span>
+                        <button class="add-to-cart">Emporta-t'ho</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="art-card">
+                <img src="./img/ItalyOlymics1.png" onerror="this.src='https://placehold.co/400x500/333/FFF?text=Art+Missing'" class="art-image">
+                <div class="art-info">
+                    <div class="art-title">Ulls al cel</div>
+                    <div class="art-artist">by Iago Gallart</div>
+                    <div class="art-footer">
+                        <span class="art-price">10€</span>
+                        <button class="add-to-cart">Emporta-t'ho</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="art-card">
+                <img src="./img/ItalyOlymics2.png" onerror="this.src='https://placehold.co/400x500/333/FFF?text=Art+Missing'" class="art-image">
+                <div class="art-info">
+                    <div class="art-title">Vigilia</div>
+                    <div class="art-artist">by Iago Gallart</div>
+                    <div class="art-footer">
+                        <span class="art-price">90€</span>
+                        <button class="add-to-cart">Emporta-t'ho</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="toast">Item al carro!</div>
+
+    <script>
+        // 1. Initialize Cart
+        let cart = JSON.parse(localStorage.getItem('modernaCart')) || [];
+        document.getElementById('cart-count').innerText = cart.length;
+
+        // 2. Add Logic
+        document.querySelectorAll('.add-to-cart').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const card = this.closest('.art-card');
+
+                const item = {
+                    id: Date.now(), // Unique ID
+                    title: card.querySelector('.art-title').innerText,
+                    artist: card.querySelector('.art-artist').innerText,
+                    price: card.querySelector('.art-price').innerText,
+                    image: card.querySelector('.art-image').src
+                };
+
+                cart.push(item);
+                localStorage.setItem('modernaCart', JSON.stringify(cart));
+
+                // Update UI
+                document.getElementById('cart-count').innerText = cart.length;
+
+                // Show Toast (En Català)
+                const toast = document.getElementById('toast');
+                toast.innerText = `"${item.title}" afegit al carro!`;
+                toast.className = "show";
+                setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+            });
+        });
+    </script>
+</body>
+</html>
